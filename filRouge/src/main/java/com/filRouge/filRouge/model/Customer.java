@@ -5,6 +5,8 @@
 package com.filRouge.filRouge.model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -29,6 +31,7 @@ import lombok.NoArgsConstructor;
 @Table(name="customer")
 @Data
 @NoArgsConstructor
+@JsonSerialize(using = CustomerSerializer.class)
 public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +47,7 @@ public class Customer implements Serializable {
     private String company;
     
     @Email
+    @Column(unique=true)
     private String mail;
     
     @Column(length=10)
@@ -63,6 +67,7 @@ public class Customer implements Serializable {
     
     private Boolean active;
     
+    @Column(nullable=false)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
 
@@ -79,7 +84,5 @@ public class Customer implements Serializable {
         this.active = active;
     }
     
-//    public void copy(){
-//        
-//    }
+    
 }

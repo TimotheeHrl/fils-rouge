@@ -4,6 +4,7 @@
  */
 package com.filRouge.filRouge.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -38,6 +39,7 @@ public class Order {
     private String label;
     
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name="customer_id", nullable=false)
     private Customer customer;
     
