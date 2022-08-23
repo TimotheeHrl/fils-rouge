@@ -51,12 +51,12 @@ public class Order {
     
     @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
     @Formula("unitPrice*numberOfDay")
-    private Double totalExcludeTaxe;
-    
+    private Double total_excludeTaxe;
+    /*
     @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
     @Formula("totalExcludeTaxe*1.20")
     private Double totalWithTaxe;
-    
+    */
     private String status;
 
     public Order(String type, String label, Customer customer, Long numberOfDay, Double unitPrice, String status) {
