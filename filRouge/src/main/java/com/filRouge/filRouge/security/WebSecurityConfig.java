@@ -16,6 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+
 
 @Configuration
 @EnableWebSecurity
@@ -61,5 +63,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .anyRequest().authenticated();
 
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+  }
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+    // Allow swagger to be accessed without authentication
+    web.ignoring().antMatchers("/v2/api-docs")//
+            .antMatchers("/swagger-resources/**")//
+            .antMatchers("/swagger-ui.html")//
+         ;
   }
 }
