@@ -4,7 +4,6 @@
  */
 package com.filRouge.filRouge.controller;
 
-import com.filRouge.filRouge.security.MyUserDetails;
 import com.filRouge.filRouge.service.CustomerService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +33,11 @@ public class CustomerController {
     
 
     private CustomerService customerService;
-    private final ModelMapper modelMapper;
-   private final MyUserDetails myUserDetails ;
 
 @Autowired
-     public CustomerController(@Lazy CustomerService customerService, ModelMapper modelMapper, MyUserDetails myUserDetails){
+     public CustomerController(@Lazy CustomerService customerService){
         this.customerService = customerService;
-        this.modelMapper = modelMapper;
-    this.myUserDetails = myUserDetails;
+
 }
 
 
@@ -56,89 +52,16 @@ public class CustomerController {
         }
         
     }
-    @RolesAllowed({"ROLE_ADMIN"})
+    @RolesAllowed({"ROLE_MODERATEUR"})
     @RequestMapping(value="/customer", method= RequestMethod.POST)
     public ResponseEntity<Object> createCustomer(@RequestBody Customer customer, HttpServletRequest request) {
-String role = customerService.whoami(request).getAppUserRoles().toString();
-        System.out.println(role);
     try {
-        if(role.equals("[ROLE_ADMIN]")){
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerService.save(customer)));
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
-        }
+
     } catch (Exception ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
-    }
-    }
-
-
-
-    @PostMapping("/signin")
-    @ApiOperation(value = "${UserController.signin}")
-    @ApiResponses(value = {//
-            @ApiResponse(code = 400, message = "Something went wrong"), //
-            @ApiResponse(code = 422, message = "Invalid username/password supplied")})
-    public String login(@ApiParam("Signup User") @RequestBody Customer user) {
-        String mail = user.getMail();
-        String password = user.getPassword();
-        System.out.println(mail +" "+ password);
-        return customerService.signin(mail, password);
+     }
     }
 
-    @PostMapping("/signup")
-    @ApiOperation(value = "${UserController.signup}")
-    @ApiResponses(value = {//
-            @ApiResponse(code = 400, message = "Something went wrong"), //
-            @ApiResponse(code = 403, message = "Access denied"), //
-            @ApiResponse(code = 422, message = "Username is already in use")})
-    public String signup(@ApiParam("Signup User") @RequestBody Customer user) {
-        System.out.println(user.toString());
-
-        return customerService.signup(modelMapper.map(user, Customer.class));
-    }
-
-    @DeleteMapping(value = "/{username}")
-    @PreAuthorize("hasRole('ADMIN')")
-    @ApiOperation(value = "${UserController.delete}", authorizations = { @Authorization(value="apiKey") })
-    @ApiResponses(value = {//
-            @ApiResponse(code = 400, message = "Something went wrong"), //
-            @ApiResponse(code = 403, message = "Access denied"), //
-            @ApiResponse(code = 404, message = "The user doesn't exist"), //
-            @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
-    public String delete(@ApiParam("Username") @PathVariable String username) {
-        customerService.delete(username);
-        return username;
-    }
-
-    @GetMapping(value = "/{username}")
-    @PreAuthorize("hasRole('ADMIN')")
-    @ApiOperation(value = "${UserController.search}", response = Customer.class, authorizations = { @Authorization(value="apiKey") })
-    @ApiResponses(value = {//
-            @ApiResponse(code = 400, message = "Something went wrong"), //
-            @ApiResponse(code = 403, message = "Access denied"), //
-            @ApiResponse(code = 404, message = "The user doesn't exist"), //
-            @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
-    public Customer search(@ApiParam("Username") @PathVariable String username) {
-        return modelMapper.map(customerService.search(username), Customer.class);
-    }
-
-    @GetMapping(value = "/me")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT')")
-    @ApiOperation(value = "${UserController.me}", response = Customer.class, authorizations = { @Authorization(value="apiKey") })
-    @ApiResponses(value = {//
-            @ApiResponse(code = 400, message = "Something went wrong"), //
-            @ApiResponse(code = 403, message = "Access denied"), //
-            @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
-    public Customer whoami(HttpServletRequest req) {
-        return modelMapper.map(customerService.whoami(req), Customer.class);
-    }
-
-    @GetMapping("/refresh")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT')")
-    public String refresh(HttpServletRequest req) {
-        return customerService.refresh(req.getRemoteUser());
-    }
 
 }

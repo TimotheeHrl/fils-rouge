@@ -7,7 +7,7 @@ package com.filRouge.filRouge.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
-import com.filRouge.filRouge.model.AppUserRole;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
@@ -66,8 +66,6 @@ public class Customer implements Serializable {
     @Size(min = 8, message = "Minimum password length: 8 characters")
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    List<AppUserRole> appUserRoles;
 
     @Column(nullable=false)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
@@ -75,10 +73,9 @@ public class Customer implements Serializable {
 
 
     @Autowired
-    public Customer(String lastname, String firstname, String password, String company, String mail, String phone, String adress, String zipCode, String city, String country, Boolean active, List<AppUserRole> appUserRoles) {
+    public Customer(String lastname, String firstname, String company, String mail, String phone, String adress, String zipCode, String city, String country, Boolean active) {
          this.lastname = lastname;
           this.firstname = firstname;
-          this.password = password;
           this.company = company;
           this.mail = mail;
           this.phone = phone;
@@ -87,7 +84,6 @@ public class Customer implements Serializable {
           this.city = city;
           this.country = country;
           this.active = active;
-          this.appUserRoles = appUserRoles;
      }
 
     
