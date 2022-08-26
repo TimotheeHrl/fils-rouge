@@ -18,7 +18,7 @@ public interface ICustomerService<C, L extends Number> {
 
     public Customer findById(Long id);
     
-    public void save(Customer customer);
+    public Customer save(Customer customer);
     
     public void delete(Long id);
 

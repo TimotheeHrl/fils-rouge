@@ -7,6 +7,7 @@ package com.filRouge.filRouge.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
+import com.filRouge.filRouge.model.AppUserRole;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
@@ -74,19 +75,21 @@ public class Customer implements Serializable {
 
 
     @Autowired
-    public Customer(String lastname, String firstname, String password, String company, String mail, String phone, String adress, String zipCode, String city, String country, Boolean active) {
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.password = password;
-        this.company = company;
-        this.mail = mail;
-        this.phone = phone;
-        this.adress = adress;
-        this.zipCode = zipCode;
-        this.city = city;
-        this.country = country;
-        this.active = active;
-    }
+    public Customer(String lastname, String firstname, String password, String company, String mail, String phone, String adress, String zipCode, String city, String country, Boolean active, List<AppUserRole> appUserRoles) {
+         this.lastname = lastname;
+          this.firstname = firstname;
+          this.password = password;
+          this.company = company;
+          this.mail = mail;
+          this.phone = phone;
+          this.adress = adress;
+          this.zipCode = zipCode;
+          this.city = city;
+          this.country = country;
+          this.active = active;
+          this.appUserRoles = appUserRoles;
+     }
+
     
     
 }

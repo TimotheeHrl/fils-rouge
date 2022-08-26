@@ -4,6 +4,7 @@
  */
 package com.filRouge.filRouge.controller;
 
+import com.filRouge.filRouge.security.MyUserDetails;
 import com.filRouge.filRouge.service.CustomerService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.filRouge.filRouge.model.Customer;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -31,12 +35,14 @@ public class CustomerController {
 
     private CustomerService customerService;
     private final ModelMapper modelMapper;
+   private final MyUserDetails myUserDetails ;
 
 @Autowired
-     public CustomerController(CustomerService customerService, ModelMapper modelMapper){
+     public CustomerController(@Lazy CustomerService customerService, ModelMapper modelMapper, MyUserDetails myUserDetails){
         this.customerService = customerService;
         this.modelMapper = modelMapper;
-    }
+    this.myUserDetails = myUserDetails;
+}
 
 
     @GetMapping(value="/customers")
@@ -50,10 +56,21 @@ public class CustomerController {
         }
         
     }
+    @RolesAllowed({"ROLE_ADMIN"})
     @RequestMapping(value="/customer", method= RequestMethod.POST)
-    public ResponseEntity<Object> createCustomer(@RequestBody Customer customer){
-        customerService.save(customer);
-        return new ResponseEntity<>("Customer is created successfully", HttpStatus.CREATED);
+    public ResponseEntity<Object> createCustomer(@RequestBody Customer customer, HttpServletRequest request) {
+String role = customerService.whoami(request).getAppUserRoles().toString();
+        System.out.println(role);
+    try {
+        if(role.equals("[ROLE_ADMIN]")){
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerService.save(customer)));
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    } catch (Exception ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+    }
     }
 
 
@@ -83,7 +100,7 @@ public class CustomerController {
     }
 
     @DeleteMapping(value = "/{username}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "${UserController.delete}", authorizations = { @Authorization(value="apiKey") })
     @ApiResponses(value = {//
             @ApiResponse(code = 400, message = "Something went wrong"), //
@@ -96,7 +113,7 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/{username}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "${UserController.search}", response = Customer.class, authorizations = { @Authorization(value="apiKey") })
     @ApiResponses(value = {//
             @ApiResponse(code = 400, message = "Something went wrong"), //
@@ -108,7 +125,7 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/me")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT')")
     @ApiOperation(value = "${UserController.me}", response = Customer.class, authorizations = { @Authorization(value="apiKey") })
     @ApiResponses(value = {//
             @ApiResponse(code = 400, message = "Something went wrong"), //
@@ -119,7 +136,7 @@ public class CustomerController {
     }
 
     @GetMapping("/refresh")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT')")
     public String refresh(HttpServletRequest req) {
         return customerService.refresh(req.getRemoteUser());
     }

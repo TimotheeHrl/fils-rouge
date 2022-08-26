@@ -3,6 +3,7 @@ package com.filRouge.filRouge.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
+import com.filRouge.filRouge.model.Customer;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -34,12 +35,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()//
         .antMatchers("/signin").permitAll()//
         .antMatchers("/signup").permitAll()//
-        .antMatchers("/h2-console/**/**").permitAll()
-        // Disallow everything else..
-        .anyRequest().authenticated();
+        .antMatchers("/h2-console/**/**").permitAll()//
+//          .antMatchers(HttpMethod.POST, "/").hasRole("ROLE_ADMIN") // Admin should be able to create
+            .anyRequest().authenticated();
 
     // If a user try to access a resource without having enough permissions
-    http.exceptionHandling().accessDeniedPage("/login");
+    http.exceptionHandling().accessDeniedPage("/signin");
 
     // Apply JWT
     http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));

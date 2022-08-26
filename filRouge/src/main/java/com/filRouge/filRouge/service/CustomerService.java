@@ -4,14 +4,11 @@
  */
 package com.filRouge.filRouge.service;
 
-import com.filRouge.filRouge.model.AppUserRole;
 import com.filRouge.filRouge.model.Customer;
 import com.filRouge.filRouge.repository.CustomerRepository;
 import com.filRouge.filRouge.exception.CustomException;
 import com.filRouge.filRouge.security.JwtTokenProvider;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +60,9 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public void save(Customer customer) {
+    public Customer save(Customer customer) {
         customerRepository.save(customer);
+        return customer;
     }
 
     @Override
@@ -87,6 +85,8 @@ public class CustomerService implements ICustomerService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(mail, password));
             return jwtTokenProvider.createToken(mail, customerRepository.findByMail(mail).getAppUserRoles());
         } catch (AuthenticationException e) {
+
+            System.out.println(e.toString());
             throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
