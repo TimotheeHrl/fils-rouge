@@ -86,6 +86,40 @@ public class Customer implements Serializable {
           this.active = active;
      }
 
-    
-    
+public Customer update (Customer customer) {
+    if (!this.lastname.equals(lastname)) {
+        customer.setLastname(this.lastname);
+    }
+    if (!this.firstname.equals(firstname)) {
+        customer.setFirstname(this.firstname);
+    }
+    if (!this.company.equals(company)) {
+        customer.setCompany(this.company);
+    }
+    if (!this.mail.equals(mail)) {
+        customer.setMail(this.mail);
+    }
+    if (!this.phone.equals(phone)) {
+        customer.setPhone(this.phone);
+    }
+    if (!this.adress.equals(adress)) {
+        customer.setAdress(this.adress);
+    }
+    if (!this.zipCode.equals(zipCode)) {
+        customer.setZipCode(this.zipCode);
+    }
+    if (!this.city.equals(city)) {
+        customer.setCity(this.city);
+    }
+    if (!this.country.equals(country)) {
+        customer.setCountry(this.country);
+    }
+    if (!this.active.equals(active)) {
+        customer.setActive(this.active);
+    }
+    return customer;
+}
+
+
+
 }

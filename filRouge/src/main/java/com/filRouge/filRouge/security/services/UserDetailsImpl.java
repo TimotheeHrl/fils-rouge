@@ -1,11 +1,14 @@
 package com.filRouge.filRouge.security.services;
 
+import ch.qos.logback.core.net.SMTPAppenderBase;
 import com.filRouge.filRouge.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.filRouge.filRouge.security.jwt.AuthTokenFilter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -99,4 +102,5 @@ public class UserDetailsImpl implements UserDetails {
     UserDetailsImpl user = (UserDetailsImpl) o;
     return Objects.equals(id, user.id);
   }
+
 }

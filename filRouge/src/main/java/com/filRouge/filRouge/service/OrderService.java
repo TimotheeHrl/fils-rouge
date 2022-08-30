@@ -34,13 +34,19 @@ public class OrderService implements IOrderService{
     }
 
     @Override
-    public void save(Order order) {
+    public Order save(Order order) {
         orderRepo.save(order);
+        return order;
     }
 
     @Override
     public void delete(Long id) {
         orderRepo.deleteById(id);
+    }
+
+    @Override
+    public List<Order> findByCustomer(Long id) {
+        return orderRepo.findByCustomer(id);
     }
     
 }

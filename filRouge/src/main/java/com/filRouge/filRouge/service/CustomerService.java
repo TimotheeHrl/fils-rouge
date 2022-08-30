@@ -6,20 +6,12 @@ package com.filRouge.filRouge.service;
 
 import com.filRouge.filRouge.model.Customer;
 import com.filRouge.filRouge.repository.CustomerRepository;
-import com.filRouge.filRouge.exception.CustomException;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author maxla
@@ -64,13 +56,15 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public boolean findByMail(String mail) {
-        return false;
+    public Customer findByMail(String mail) {
+        return customerRepository.findByMail(mail);
+
     }
 
     @Override
     public void deleteByMail(String mail) {
 
     }
+
 
 }

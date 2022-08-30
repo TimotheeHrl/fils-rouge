@@ -9,6 +9,7 @@ import com.filRouge.filRouge.payload.response.JwtResponse;
 import com.filRouge.filRouge.payload.response.MessageResponse;
 import com.filRouge.filRouge.repository.RoleRepository;
 import com.filRouge.filRouge.repository.UserRepository;
+import com.filRouge.filRouge.security.CurrentUser;
 import com.filRouge.filRouge.security.jwt.JwtUtils;
 import com.filRouge.filRouge.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +49,9 @@ public class AuthController {
   @Autowired
   JwtUtils jwtUtils;
 
+
+
+
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -66,6 +73,7 @@ public class AuthController {
                          roles));
   }
 
+
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -85,39 +93,53 @@ public class AuthController {
                signUpRequest.getEmail(),
                encoder.encode(signUpRequest.getPassword()));
 
-    Set<String> strRoles = signUpRequest.getRole();
     Set<Role> roles = new HashSet<>();
 
-    if (strRoles == null) {
       Role userRole = roleRepository.findByName(ERole.ROLE_USER)
           .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
       roles.add(userRole);
-    } else {
-      strRoles.forEach(role -> {
-        switch (role) {
-        case "admin":
-          Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(adminRole);
 
-          break;
-        case "mod":
-          Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(modRole);
-
-          break;
-        default:
-          Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(userRole);
-        }
-      });
-    }
 
     user.setRoles(roles);
     userRepository.save(user);
 
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
   }
+
+  @RolesAllowed({"ROLE_ADMIN"})
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUserAdmin(@PathVariable(value = "id") Long id,
+                                           @Valid @RequestBody User userDetails) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id : " + id));
+
+  if(userDetails.getEmail() != null) {
+    user.setEmail(userDetails.getEmail());
+  }
+  if(userDetails.getRoles() != null) {
+    user.setRoles(userDetails.getRoles());
+  }
+        userRepository.save(user);
+        return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
+    }
+
+
+    @RolesAllowed({"ROLE_MODERATOR"})
+      @PutMapping("/")
+        public ResponseEntity<?> updateUserModerator(@Valid @RequestBody User userDetails,@CurrentUser UserDetails currentUser) {
+   String userName = currentUser.getUsername();
+User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new RuntimeException("User not found with username : " + userName));
+
+
+    if(userDetails.getEmail() != null) {
+      user.setEmail(userDetails.getEmail());
+    }
+  if(userDetails.getPassword() != null) {
+     user.setPassword(userDetails.getPassword());
+  }
+  userRepository.save(user);
+          return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
+      }
+
 }

@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author maxla
  */
-@RestController
+@RestController("/api/customers")
 @Api(tags = "/")
 @RequiredArgsConstructor
 public class CustomerController {
@@ -37,11 +37,8 @@ public class CustomerController {
 @Autowired
      public CustomerController(@Lazy CustomerService customerService){
         this.customerService = customerService;
-
 }
-
-
-    @GetMapping(value="/customers")
+    @GetMapping(value="/")
     public ResponseEntity getCustomers(){
         String serialized = "";
         List<Customer> clients = this.customerService.findAll();
@@ -53,7 +50,7 @@ public class CustomerController {
         
     }
     @RolesAllowed({"ROLE_MODERATEUR"})
-    @RequestMapping(value="/customer", method= RequestMethod.POST)
+    @RequestMapping(value="/", method= RequestMethod.POST)
     public ResponseEntity<Object> createCustomer(@RequestBody Customer customer, HttpServletRequest request) {
     try {
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerService.save(customer)));
@@ -62,6 +59,50 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
      }
     }
+
+    @RolesAllowed({"ROLE_MODERATEUR"})
+    @PutMapping(value="/{id}")
+    public  ResponseEntity<Object> updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
+        try {
+            Customer customerToUpdate = customerService.findById(id);
+          Customer updatedCustomer =  customerToUpdate.update(customer);
+            customerService.save(updatedCustomer);
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(updatedCustomer));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    }
+
+
+
+    @RolesAllowed({"ROLE_MODERATEUR"})
+@GetMapping(value="/{mail}")
+    public ResponseEntity<Object> getCustomerByMail(@PathVariable("mail") String mail) {
+        try {
+
+            Customer customer = customerService.findByMail(mail);
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customer));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    }
+
+    @RolesAllowed({"ROLE_MODERATEUR"})
+    @DeleteMapping(value="/{mail}")
+    public ResponseEntity<Object> deleteCustomerByMail(@PathVariable("mail") String mail) {
+        try {
+            customerService.deleteByMail(mail);
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString("Customer deleted"));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    }
+
+
+
+
+
+
 
 
 }

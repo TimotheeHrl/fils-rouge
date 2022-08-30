@@ -17,8 +17,12 @@ public interface IOrderService {
 
     public Order findById(Long id);
     
-    public void save(Order order);
+    public Order save(Order order);
     
     public void delete(Long id);
+
+    public List<Order> findByCustomer(Long id);
+
+
     
 }

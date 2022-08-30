@@ -22,10 +22,11 @@ public interface ICustomerService<C, L extends Number> {
     
     public void delete(Long id);
 
-    boolean findByMail(String mail);
+    Customer findByMail(String mail);
 
 
     @Transactional
     void deleteByMail(String mail);
-    
+
+
 }

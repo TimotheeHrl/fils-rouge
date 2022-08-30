@@ -30,6 +30,12 @@ public class CustomerSerializer extends StdSerializer<Customer> {
         jg.writeNumberField("id", t.getId());
         jg.writeStringField("lastname", t.getLastname());
         jg.writeStringField("firstname", t.getFirstname());
+        jg.writeStringField("company", t.getCompany());
+        jg.writeStringField("mail", t.getMail());
+        jg.writeStringField("phone", t.getPhone());
+        jg.writeStringField("adress", t.getAdress());
+        jg.writeStringField("zipCode", t.getZipCode());
+        jg.writeStringField("city", t.getCity());
         jg.writeEndObject();
     }
     
