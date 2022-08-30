@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
       .authorizeRequests().antMatchers("/api/auth/**").permitAll()
       .antMatchers("/api/test/**").permitAll()
-      .anyRequest().authenticated();
+      .anyRequest().permitAll();
 
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
   }
@@ -68,8 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) throws Exception {
     // Allow swagger to be accessed without authentication
     web.ignoring().antMatchers("/v2/api-docs")//
-            .antMatchers("/swagger-resources/**")//
-            .antMatchers("/swagger-ui.html")//
+            .antMatchers("/swagger-ui/**")//
          ;
   }
 }

@@ -15,7 +15,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -26,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Table(name="customer")
 @Data
 @NoArgsConstructor
+@Getter
+@Setter
 @JsonSerialize(using = CustomerSerializer.class)
 public class Customer implements Serializable {
     @Id
@@ -73,7 +77,7 @@ public class Customer implements Serializable {
 
 
     @Autowired
-    public Customer(String lastname, String firstname, String company, String mail, String phone, String adress, String zipCode, String city, String country, Boolean active) {
+    public Customer(String lastname, String firstname, String company, String mail, String phone, String adress, String zipCode, String city, String country, Boolean active, String password,List<Order> orders) {
          this.lastname = lastname;
           this.firstname = firstname;
           this.company = company;
@@ -84,41 +88,10 @@ public class Customer implements Serializable {
           this.city = city;
           this.country = country;
           this.active = active;
+          this.orders = orders;
      }
 
-public Customer update (Customer customer) {
-    if (!this.lastname.equals(lastname)) {
-        customer.setLastname(this.lastname);
-    }
-    if (!this.firstname.equals(firstname)) {
-        customer.setFirstname(this.firstname);
-    }
-    if (!this.company.equals(company)) {
-        customer.setCompany(this.company);
-    }
-    if (!this.mail.equals(mail)) {
-        customer.setMail(this.mail);
-    }
-    if (!this.phone.equals(phone)) {
-        customer.setPhone(this.phone);
-    }
-    if (!this.adress.equals(adress)) {
-        customer.setAdress(this.adress);
-    }
-    if (!this.zipCode.equals(zipCode)) {
-        customer.setZipCode(this.zipCode);
-    }
-    if (!this.city.equals(city)) {
-        customer.setCity(this.city);
-    }
-    if (!this.country.equals(country)) {
-        customer.setCountry(this.country);
-    }
-    if (!this.active.equals(active)) {
-        customer.setActive(this.active);
-    }
-    return customer;
-}
+
 
 
 

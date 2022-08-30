@@ -17,8 +17,10 @@ import java.util.List;
  *
  * @author maxla
  */
-@RestController("/api/orders")
-@Api(tags = "/")
+@CrossOrigin(origins = "*", maxAge = 3600)
+
+@RestController
+@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
 

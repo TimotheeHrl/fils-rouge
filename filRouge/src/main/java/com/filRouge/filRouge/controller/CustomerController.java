@@ -26,9 +26,11 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author maxla
  */
-@RestController("/api/customers")
-@Api(tags = "/")
+@CrossOrigin(origins = "*", maxAge = 3600)
+
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/customers")
 public class CustomerController {
     
 
@@ -38,7 +40,7 @@ public class CustomerController {
      public CustomerController(@Lazy CustomerService customerService){
         this.customerService = customerService;
 }
-    @GetMapping(value="/")
+    @GetMapping(value="/all")
     public ResponseEntity getCustomers(){
         String serialized = "";
         List<Customer> clients = this.customerService.findAll();
@@ -49,10 +51,12 @@ public class CustomerController {
         }
         
     }
-    @RolesAllowed({"ROLE_MODERATEUR"})
-    @RequestMapping(value="/", method= RequestMethod.POST)
+
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PostMapping(value="/add")
     public ResponseEntity<Object> createCustomer(@RequestBody Customer customer, HttpServletRequest request) {
     try {
+        System.out.println(customer.toString());
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerService.save(customer)));
 
     } catch (Exception ex) {
@@ -60,14 +64,47 @@ public class CustomerController {
      }
     }
 
-    @RolesAllowed({"ROLE_MODERATEUR"})
-    @PutMapping(value="/{id}")
+            @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+               @PutMapping(value="/{id}")
     public  ResponseEntity<Object> updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
         try {
+            System.out.println(id.toString());
             Customer customerToUpdate = customerService.findById(id);
-          Customer updatedCustomer =  customerToUpdate.update(customer);
-            customerService.save(updatedCustomer);
-            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(updatedCustomer));
+
+
+            if(customer.getLastname()!=null){
+                customerToUpdate.setLastname(customer.getLastname());
+            }
+            if(customer.getFirstname()!=null){
+                customerToUpdate.setFirstname(customer.getFirstname());
+            }
+            if(customer.getMail()!=null){
+                customerToUpdate.setMail(customer.getMail());
+            }
+            if(customer.getPhone()!=null){
+                customerToUpdate.setPhone(customer.getPhone());
+            }
+            if(customer.getAdress()!=null){
+                customerToUpdate.setAdress(customer.getAdress());
+            }
+            if(customer.getCity()!=null){
+                customerToUpdate.setCity(customer.getCity());
+            }
+            if(customer.getZipCode()!=null){
+                customerToUpdate.setZipCode(customer.getZipCode());
+            }
+            if(customer.getCountry()!=null){
+                customerToUpdate.setCountry(customer.getCountry());
+            }
+            if(customer.getCompany()!=null){
+                customerToUpdate.setCompany(customer.getCompany());
+            }
+            if(customer.getActive() !=null){
+                customerToUpdate.setActive(customer.getActive());
+            }
+
+            customerService.save(customerToUpdate);
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerToUpdate));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
         }
