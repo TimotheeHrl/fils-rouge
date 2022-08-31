@@ -50,9 +50,7 @@ public class Order {
     @PositiveOrZero(message = "doit etre superieur a 0!")
     private Double unitPrice;
     
-    @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
-    @Formula("unitPrice*numberOfDay")
-    private Double total_excludeTaxe;
+
 
     private String status;
 

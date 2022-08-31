@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 /**
  *
@@ -19,10 +20,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     boolean existsByMail(String mail);
 
     Customer findByMail(String mail);
+
     @Transactional
     void deleteByMail(String mail);
 
-    Customer findById(Long id);
 
 
 }
