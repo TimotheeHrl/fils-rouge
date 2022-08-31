@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.filRouge.filRouge.model.Customer;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -56,10 +58,10 @@ public class CustomerController {
 
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping(value="/add")
-    public ResponseEntity<Object> createCustomer(@RequestBody Customer customer, HttpServletRequest request) {
+    public ResponseEntity<Object> createCustomer(@RequestBody Customer customer) {
     try {
         System.out.println(customer.toString());
-            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerService.save(customer)));
+        return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerService.save(customer)));
 
     } catch (Exception ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
@@ -71,8 +73,9 @@ public class CustomerController {
     public  ResponseEntity<Object> updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
         try {
             System.out.println(id.toString());
-            Customer customerToUpdate = customerService.findById(id);
+            Optional<Customer> customerToUpdateOp = customerService.findById(id);
 
+            Customer customerToUpdate = customerToUpdateOp.get();
 
             if(customer.getLastname()!=null){
                 customerToUpdate.setLastname(customer.getLastname());
@@ -115,7 +118,7 @@ public class CustomerController {
 
 
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-@GetMapping(value="/{mail}")
+@GetMapping(value="/mail/{mail}")
     public ResponseEntity<Object> getCustomerByMail(@PathVariable("mail") String mail) {
         try {
 
@@ -125,6 +128,20 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
         }
     }
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @GetMapping(value="/id/{id}")
+    public ResponseEntity<Object> getCustomerById(@PathVariable("id") String id) {
+        System.out.println(id);
+        try {
+            Optional<Customer> customerOp = customerService.findById(Long.parseLong(id));
+            Customer customer = customerOp.get();
+            System.out.println(customer.toString());
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customer));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    }
+
 
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @DeleteMapping(value="/{mail}")

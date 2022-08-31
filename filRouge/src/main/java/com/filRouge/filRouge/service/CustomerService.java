@@ -8,6 +8,8 @@ import com.filRouge.filRouge.model.Customer;
 import com.filRouge.filRouge.repository.CustomerRepository;
 
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -40,8 +42,8 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public Customer findById(Long id) {
-        return customerService.findById(id);
+    public Optional<Customer> findById(Long id) {
+        return customerRepository.findById(id);
     }
 
     @Override

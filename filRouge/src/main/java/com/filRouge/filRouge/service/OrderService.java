@@ -79,7 +79,5 @@ public class OrderService implements IOrderService {
     }
 
 
-    public Customer findCustomerById(Long id) {
-        return customerService.findById(id);
-    }
+
 }

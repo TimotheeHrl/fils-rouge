@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.filRouge.filRouge.model.Customer;
 import com.filRouge.filRouge.model.Order;
+import com.filRouge.filRouge.service.CustomerService;
 import com.filRouge.filRouge.service.OrderService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -32,10 +34,13 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final CustomerService customerService;
+
 
    @Autowired
-    public OrderController(@Lazy OrderService orderService){
+    public OrderController(@Lazy OrderService orderService, @Lazy CustomerService customerService){
         this.orderService = orderService;
+        this.customerService = customerService;
     }
 
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
@@ -57,13 +62,12 @@ public class OrderController {
         }
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @PostMapping("/add")
-    public ResponseEntity<Object> createOrder(@RequestBody Order order) {
-        System.out.println(order.toString());
-
+    @PostMapping("/add/{id}")
+    public ResponseEntity<Object> createOrder(@RequestBody Order order, @PathVariable("id") String id) {
         try {
-           Long customerId = order.getCustomer().getId();
-              Customer customer = orderService.findCustomerById(customerId);
+
+              Optional<Customer> customerOp = customerService.findById(Long.parseLong(id));
+              Customer customer = customerOp.get();
                 order.setCustomer(customer);
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.save(order)));
         } catch (JsonProcessingException ex) {
@@ -80,8 +84,9 @@ public class OrderController {
               orderToUpdate.setLabel(order.getLabel());
           }
           if(order.getCustomer().getId() != null){
-              Customer customer = orderService.findCustomerById(order.getCustomer().getId());
-                orderToUpdate.setCustomer(customer);
+             Optional <Customer> customer = customerService.findById(order.getCustomer().getId());
+             Customer customerToUpdate = customer.get();
+                orderToUpdate.setCustomer(customerToUpdate);
           }
           if(order.getStatus() != null) {
               orderToUpdate.setStatus(order.getStatus());

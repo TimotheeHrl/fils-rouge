@@ -8,16 +8,17 @@ import com.filRouge.filRouge.model.Customer;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
  * @author maxla
  */
-public interface ICustomerService<C, L extends Number> {
+public interface ICustomerService {
     public List<Customer> findAll();
 
 
-    Customer findById(Long id);
+    Optional<Customer> findById(Long id);
 
     public Customer save(Customer customer);
     

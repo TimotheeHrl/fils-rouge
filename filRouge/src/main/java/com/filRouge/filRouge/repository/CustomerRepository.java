@@ -19,8 +19,9 @@ import java.util.Optional;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     boolean existsByMail(String mail);
 
-    Customer findByMail(String mail);
+    Optional<Customer> findById(Long id);
 
+    Customer findByMail(String mail);
     @Transactional
     void deleteByMail(String mail);
 
