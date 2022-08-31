@@ -1,28 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package com.filRouge.filRouge.service;
 
 import com.filRouge.filRouge.model.Order;
+
 import java.util.List;
 
-/**
- *
- * @author maxla
- */
 public interface IOrderService {
-    
-    public List<Order> findAll();
+    List<Order> findAll();
 
-    public Order findById(Long id);
-    
-    public Order save(Order order);
-    
-    public void delete(Long id);
+    Order findById(Long id);
 
-    public List<Order> findByCustomer(Long id);
+    Order save(Order order);
 
+    void delete(Long id);
 
-    
+    Order findByCustomer(Long id);
+
+    List<Order> findByStatus(String status);
+
+    void deleteByCustomer(Long id);
+
+    void updateOrder(Order order);
+
+    void deleteOrderById(Long id);
 }

@@ -20,10 +20,17 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     public List<Order> findByCustomer(Long id);
 
-    public  List<Order> findByCustomerAndStatus(Long id, String status);
+    public  List<Order> findByStatus( String status);
 
     @Transactional
     public  void deleteByCustomer(Long id);
+
+    @Transactional
+    public  void deleteByStatus(String status);
+
+
+    @Transactional
+    public  void deleteById(Long id);
 
 
 }

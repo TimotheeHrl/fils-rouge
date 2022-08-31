@@ -4,10 +4,18 @@
  */
 package com.filRouge.filRouge.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.filRouge.filRouge.model.Customer;
 import com.filRouge.filRouge.model.Order;
 import com.filRouge.filRouge.service.OrderService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -21,34 +29,88 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
 
+   @Autowired
+    public OrderController(@Lazy OrderService orderService){
+        this.orderService = orderService;
+    }
 
-    @RolesAllowed({"ROLE_MODERATEUR"})
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public Order findById(@PathVariable Long id) {
-        return orderService.findById(id);
+    public ResponseEntity<Object> getOrder(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.findById(id)));
+        } catch (JsonProcessingException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
     }
-
-    @RolesAllowed({"ROLE_MODERATEUR"})
-    @GetMapping("/customer/{id}")
-    public List<Order> findByCustomer(@PathVariable Long id) {
-        return orderService.findByCustomer(id);
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<Object> getOrders() {
+        try {
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.findAll()));
+        } catch (JsonProcessingException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
     }
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PostMapping("/add")
+    public ResponseEntity<Object> createOrder(@RequestBody Order order) {
+        System.out.println(order.toString());
 
-    @RolesAllowed({"ROLE_MODERATEUR"})
-    @PostMapping
-    public Order save(@RequestBody Order order) {
-        return orderService.save(order);
+        try {
+           Long customerId = order.getCustomer().getId();
+              Customer customer = orderService.findCustomerById(customerId);
+                order.setCustomer(customer);
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.save(order)));
+        } catch (JsonProcessingException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
     }
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateOrder(@RequestBody Order order) {
+        try {
+            Order orderToUpdate = orderService.findById(order.getId());
 
-    @RolesAllowed({"ROLE_MODERATEUR"})
+          if(order.getLabel() != null) {
+              orderToUpdate.setLabel(order.getLabel());
+          }
+          if(order.getCustomer().getId() != null){
+              Customer customer = orderService.findCustomerById(order.getCustomer().getId());
+                orderToUpdate.setCustomer(customer);
+          }
+          if(order.getStatus() != null) {
+              orderToUpdate.setStatus(order.getStatus());
+          }
+          if(order.getType() != null) {
+              orderToUpdate.setType(order.getType());
+            }
+          if(order.getNumberOfDay() != null) {
+              orderToUpdate.setNumberOfDay(order.getNumberOfDay());
+          }
+          if(order.getUnitPrice() != null) {
+              orderToUpdate.setUnitPrice(order.getUnitPrice());
+          }
+
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.save(order)));
+        } catch (JsonProcessingException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    }
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        orderService.delete(id);
+    public ResponseEntity<Object> deleteOrder(@PathVariable Long id) {
+        try {
+            orderService.deleteOrderById(id);
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString("Order deleted"));
+        } catch (JsonProcessingException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
     }
+
 
 }

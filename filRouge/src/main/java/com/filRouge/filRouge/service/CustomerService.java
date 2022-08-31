@@ -41,7 +41,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public Customer findById(Long id) {
-        return customerRepository.findById(id).orElse(null);
+        return customerRepository.findById(id);
     }
 
     @Override

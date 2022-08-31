@@ -22,5 +22,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Transactional
     void deleteByMail(String mail);
 
+    Customer findById(Long id);
+
 
 }

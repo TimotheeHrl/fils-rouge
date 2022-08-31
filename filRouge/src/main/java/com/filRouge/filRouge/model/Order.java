@@ -16,9 +16,12 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenerationTime;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -27,7 +30,8 @@ import org.hibernate.annotations.GenerationTime;
 @Entity
 @Table(name="orders")
 @Data
-@NoArgsConstructor
+@Setter
+@Getter
 public class Order {
     
     @Id
@@ -38,10 +42,7 @@ public class Order {
     
     private String label;
     
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name="customer_id", nullable=false)
-    private Customer customer;
+
     
     @PositiveOrZero(message = "doit etre superieur a 0!")
     private Long numberOfDay;
@@ -52,22 +53,26 @@ public class Order {
     @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
     @Formula("unitPrice*numberOfDay")
     private Double total_excludeTaxe;
-    /*
-    @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
-    @Formula("totalExcludeTaxe*1.20")
-    private Double totalWithTaxe;
-    */
+
     private String status;
 
-    public Order(String type, String label, Customer customer, Long numberOfDay, Double unitPrice, String status) {
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name="customer_id", nullable=false)
+    private Customer customer;
+
+
+    @Autowired
+    public  Order(String type, String label, Long numberOfDay, Double unitPrice, String status, Customer customer) {
         this.type = type;
         this.label = label;
-        this.customer = customer;
         this.numberOfDay = numberOfDay;
         this.unitPrice = unitPrice;
         this.status = status;
+        this.customer = customer;
     }
-    
-    
-    
+
+    public Order() {
+
+    }
 }

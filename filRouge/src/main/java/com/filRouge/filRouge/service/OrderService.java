@@ -4,9 +4,13 @@
  */
 package com.filRouge.filRouge.service;
 
+import com.filRouge.filRouge.model.Customer;
 import com.filRouge.filRouge.model.Order;
 import com.filRouge.filRouge.repository.OrderRepository;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,39 +18,68 @@ import org.springframework.stereotype.Service;
  * @author maxla
  */
 @Service
-public class OrderService implements IOrderService{
-    
-    private OrderRepository orderRepo;
+public class OrderService implements IOrderService {
 
-    public OrderService(OrderRepository orderRepo) {
-        this.orderRepo = orderRepo;
+    final OrderRepository orderRepository;
+    final ICustomerService customerService;
+    final IOrderService orderService;
+
+    @Autowired
+    public OrderService(@Lazy ICustomerService customerService, @Lazy OrderRepository orderRepository, @Lazy IOrderService orderService){
+        super();
+        this.customerService = customerService;
+        this.orderRepository = orderRepository;
+        this.orderService = orderService;
     }
-    
-    
+
     @Override
     public List<Order> findAll() {
-        return orderRepo.findAll();
+        return orderRepository.findAll();
     }
 
     @Override
     public Order findById(Long id) {
-        return orderRepo.findById(id).orElse(null);
+        return orderRepository.findById(id).orElse(null);
     }
 
     @Override
     public Order save(Order order) {
-        orderRepo.save(order);
+        orderRepository.save(order);
         return order;
     }
 
     @Override
     public void delete(Long id) {
-        orderRepo.deleteById(id);
+        orderRepository.deleteById(id);
     }
 
     @Override
-    public List<Order> findByCustomer(Long id) {
-        return orderRepo.findByCustomer(id);
+    public Order findByCustomer(Long id) {
+        return (Order) orderRepository.findByCustomer(id);
     }
-    
+
+    @Override
+    public List<Order> findByStatus(String status) {
+        return orderRepository.findByStatus(status);
+    }
+
+    @Override
+    public void deleteByCustomer(Long id) {
+        orderRepository.deleteByCustomer(id);
+    }
+
+    @Override
+    public void updateOrder(Order order) {
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void deleteOrderById(Long id) {
+        orderRepository.deleteById(id);
+    }
+
+
+    public Customer findCustomerById(Long id) {
+        return customerService.findById(id);
+    }
 }

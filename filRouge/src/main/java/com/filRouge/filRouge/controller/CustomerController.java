@@ -40,6 +40,8 @@ public class CustomerController {
      public CustomerController(@Lazy CustomerService customerService){
         this.customerService = customerService;
 }
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+
     @GetMapping(value="/all")
     public ResponseEntity getCustomers(){
         String serialized = "";
@@ -112,7 +114,7 @@ public class CustomerController {
 
 
 
-    @RolesAllowed({"ROLE_MODERATEUR"})
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
 @GetMapping(value="/{mail}")
     public ResponseEntity<Object> getCustomerByMail(@PathVariable("mail") String mail) {
         try {
@@ -124,9 +126,10 @@ public class CustomerController {
         }
     }
 
-    @RolesAllowed({"ROLE_MODERATEUR"})
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @DeleteMapping(value="/{mail}")
     public ResponseEntity<Object> deleteCustomerByMail(@PathVariable("mail") String mail) {
+
         try {
             customerService.deleteByMail(mail);
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString("Customer deleted"));

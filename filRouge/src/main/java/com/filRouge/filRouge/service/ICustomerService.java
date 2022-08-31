@@ -16,8 +16,9 @@ import java.util.List;
 public interface ICustomerService<C, L extends Number> {
     public List<Customer> findAll();
 
-    public Customer findById(Long id);
-    
+
+    Customer findById(Long id);
+
     public Customer save(Customer customer);
     
     public void delete(Long id);
