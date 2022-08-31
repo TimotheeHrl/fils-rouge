@@ -66,28 +66,29 @@ public class OrderController {
     public ResponseEntity<Object> createOrder(@RequestBody Order order, @PathVariable("id") String id) {
         try {
 
-              Optional<Customer> customerOp = customerService.findById(Long.parseLong(id));
-              Customer customer = customerOp.get();
-                order.setCustomer(customer);
+            Optional<Customer> customerOp = customerService.findById(Long.parseLong(id));
+            Customer customer = customerOp.get();
+            order.setCustomer(customer);
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.save(order)));
         } catch (JsonProcessingException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
         }
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @PutMapping("/update")
-    public ResponseEntity<Object> updateOrder(@RequestBody Order order) {
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Object> updateOrder(@RequestBody Order order, @PathVariable("id") String id) {
         try {
+
+            Optional<Customer> customerOp = customerService.findById(Long.parseLong(id));
+            Customer customer = customerOp.get();
+            order.setCustomer(customer);
+
             Order orderToUpdate = orderService.findById(order.getId());
 
           if(order.getLabel() != null) {
               orderToUpdate.setLabel(order.getLabel());
           }
-          if(order.getCustomer().getId() != null){
-             Optional <Customer> customer = customerService.findById(order.getCustomer().getId());
-             Customer customerToUpdate = customer.get();
-                orderToUpdate.setCustomer(customerToUpdate);
-          }
+         
           if(order.getStatus() != null) {
               orderToUpdate.setStatus(order.getStatus());
           }
