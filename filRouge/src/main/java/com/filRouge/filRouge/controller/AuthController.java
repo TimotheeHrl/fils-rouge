@@ -13,6 +13,7 @@ import com.filRouge.filRouge.security.CurrentUser;
 import com.filRouge.filRouge.security.jwt.JwtUtils;
 import com.filRouge.filRouge.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -52,7 +55,7 @@ public class AuthController {
 
 
 
-  @PostMapping("/signin")
+  @PostMapping(value = "/signin", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
     Authentication authentication = authenticationManager.authenticate(
@@ -74,7 +77,7 @@ public class AuthController {
   }
 
 
-  @PostMapping("/signup")
+  @PostMapping(value = "/signup", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
       return ResponseEntity
@@ -107,7 +110,7 @@ public class AuthController {
   }
 
   @RolesAllowed({"ROLE_ADMIN"})
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUserAdmin(@PathVariable(value = "id") Long id,
                                            @Valid @RequestBody User userDetails) {
         User user = userRepository.findById(id)
@@ -125,7 +128,7 @@ public class AuthController {
 
 
     @RolesAllowed({"ROLE_MODERATOR"})
-      @PutMapping("/")
+      @PutMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<?> updateUserModerator(@Valid @RequestBody User userDetails,@CurrentUser UserDetails currentUser) {
    String userName = currentUser.getUsername();
 User user = userRepository.findByUsername(userName)

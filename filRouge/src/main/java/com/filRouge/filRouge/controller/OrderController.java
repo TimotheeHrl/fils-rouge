@@ -24,6 +24,8 @@ import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 /**
  *
  * @author maxla
@@ -31,7 +33,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", maxAge = 3600)
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping(value = "/api/orders", produces = APPLICATION_JSON_VALUE)
 public class OrderController {
 
     private final OrderService orderService;
@@ -45,7 +47,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getOrder(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.findById(id)));
@@ -54,7 +56,7 @@ public class OrderController {
         }
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/all", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getOrders() {
         try {
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString( orderService.findAllWithCustomer()));
@@ -64,12 +66,10 @@ public class OrderController {
         }
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @PostMapping("/add/{id}")
-    public ResponseEntity<Object> createOrder(@RequestBody Order order, @PathVariable("id") String id) {
-        System.out.println(order);
+    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> createOrder(@RequestBody Order order) {
         try {
-
-            Optional<Customer> customerOp = customerService.findById(Long.parseLong(id));
+            Optional<Customer> customerOp = customerService.findById(order.getCustomer().getId());
             Customer customer = customerOp.get();
             order.setCustomer(customer);
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.save(order)));
@@ -78,11 +78,11 @@ public class OrderController {
         }
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateOrder(@RequestBody Order order, @PathVariable("id") String id) {
+    @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> updateOrder(@RequestBody Order order) {
         try {
 
-            Optional<Customer> customerOp = customerService.findById(Long.parseLong(id));
+            Optional<Customer> customerOp = customerService.findById(order.getCustomer().getId());
             Customer customer = customerOp.get();
             order.setCustomer(customer);
 
@@ -111,7 +111,7 @@ public class OrderController {
         }
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deleteOrder(@PathVariable Long id) {
         try {
             orderService.deleteOrderById(id);

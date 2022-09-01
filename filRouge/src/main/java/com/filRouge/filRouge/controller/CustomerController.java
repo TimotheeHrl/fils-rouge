@@ -58,7 +58,7 @@ public class CustomerController {
     }
 
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @PostMapping(value="/add")
+    @PostMapping(value="/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createCustomer(@RequestBody Customer customer) {
     try {
         System.out.println(customer.toString());
@@ -70,7 +70,7 @@ public class CustomerController {
     }
 
             @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-               @PutMapping(value="/{id}")
+               @PutMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public  ResponseEntity<Object> updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
         try {
             System.out.println(id.toString());
@@ -119,7 +119,7 @@ public class CustomerController {
 
 
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-@GetMapping(value="/mail/{mail}")
+@GetMapping(value="/mail/{mail}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getCustomerByMail(@PathVariable("mail") String mail) {
         try {
 
@@ -130,7 +130,7 @@ public class CustomerController {
         }
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @GetMapping(value="/id/{id}")
+    @GetMapping(value="/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getCustomerById(@PathVariable("id") String id) {
         System.out.println(id);
         try {
@@ -145,7 +145,7 @@ public class CustomerController {
 
 
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @DeleteMapping(value="/{mail}")
+    @DeleteMapping(value="/{mail}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deleteCustomerByMail(@PathVariable("mail") String mail) {
 
         try {

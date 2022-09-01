@@ -53,11 +53,8 @@ public class Order {
     private String status;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name="customer_id", nullable=false)
     private Customer customer;
-
-
 
 
 }
