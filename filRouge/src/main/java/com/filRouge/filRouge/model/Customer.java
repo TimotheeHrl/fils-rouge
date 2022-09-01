@@ -6,7 +6,7 @@ package com.filRouge.filRouge.model;
 
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
+//import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,6 +14,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
+import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,13 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author maxla
  */
 @Entity
-@Table(name="customer")
-@ToString
-@NoArgsConstructor
+@Data
+@Builder
 @AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor
+@Table(name="customer")
 @JsonSerialize(using = CustomerSerializer.class)
+
+//@JsonSerialize(using = CustomerSerializer.class)
 public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,25 +74,5 @@ public class Customer implements Serializable {
     @Column(nullable=false)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
-
-
-    @Autowired
-    public Customer(String lastname, String firstname, String company, String mail, String phone, String adress, String zipCode, String city, String country, Boolean active, String password,List<Order> orders) {
-         this.lastname = lastname;
-          this.firstname = firstname;
-          this.company = company;
-          this.mail = mail;
-          this.phone = phone;
-          this.adress = adress;
-          this.zipCode = zipCode;
-          this.city = city;
-          this.country = country;
-          this.active = active;
-          this.orders = orders;
-     }
-
-
-
-
 
 }

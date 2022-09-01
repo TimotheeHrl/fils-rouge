@@ -1,6 +1,7 @@
 package com.filRouge.filRouge.service;
 
 import com.filRouge.filRouge.model.Order;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -22,4 +23,7 @@ public interface IOrderService {
     void updateOrder(Order order);
 
     void deleteOrderById(Long id);
+
+
+    List<Order> findAllWithCustomer();
 }

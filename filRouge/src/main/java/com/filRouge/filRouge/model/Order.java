@@ -6,32 +6,30 @@ package com.filRouge.filRouge.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.PositiveOrZero;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.GenerationTime;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.filRouge.filRouge.controller.serialiser.OrderSerializer;
+import lombok.*;
+
 
 /**
  *
  * @author maxla
  */
 @Entity
-@Table(name="orders")
 @Data
-@Setter
-@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="orders")
+@JsonSerialize(using = OrderSerializer.class)
 public class Order {
     
     @Id
@@ -60,17 +58,6 @@ public class Order {
     private Customer customer;
 
 
-    @Autowired
-    public  Order(String type, String label, Long numberOfDay, Double unitPrice, String status, Customer customer) {
-        this.type = type;
-        this.label = label;
-        this.numberOfDay = numberOfDay;
-        this.unitPrice = unitPrice;
-        this.status = status;
-        this.customer = customer;
-    }
 
-    public Order() {
 
-    }
 }

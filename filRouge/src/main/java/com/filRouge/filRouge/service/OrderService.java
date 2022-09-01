@@ -4,7 +4,6 @@
  */
 package com.filRouge.filRouge.service;
 
-import com.filRouge.filRouge.model.Customer;
 import com.filRouge.filRouge.model.Order;
 import com.filRouge.filRouge.repository.OrderRepository;
 import java.util.List;
@@ -78,6 +77,9 @@ public class OrderService implements IOrderService {
         orderRepository.deleteById(id);
     }
 
-
+    @Override
+    public List<Order> findAllWithCustomer() {
+        return orderRepository.findAllWithCustomer();
+    }
 
 }

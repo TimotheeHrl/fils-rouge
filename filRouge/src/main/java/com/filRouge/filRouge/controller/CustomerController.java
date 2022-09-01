@@ -17,6 +17,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -44,13 +45,13 @@ public class CustomerController {
 }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
 
-    @GetMapping(value="/all")
+    @GetMapping(value="/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getCustomers(){
-        String serialized = "";
         List<Customer> clients = this.customerService.findAll();
         try {
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(clients));
         } catch (JsonProcessingException ex) {
+            System.out.println(ex  );
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
         }
         

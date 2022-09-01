@@ -6,6 +6,7 @@ package com.filRouge.filRouge.repository;
 
 import com.filRouge.filRouge.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +30,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     public  void deleteByStatus(String status);
 
 
-    @Transactional
-    public  void deleteById(Long id);
+
+    @Query("SELECT o, o.customer.id FROM Order  o ")
+    List<Order> findAllWithCustomer();
+
 
 
 }

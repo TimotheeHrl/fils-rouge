@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -53,17 +54,19 @@ public class OrderController {
         }
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getOrders() {
         try {
-            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.findAll()));
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString( orderService.findAllWithCustomer()));
         } catch (JsonProcessingException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+            System.out.println(ex);
+            return ResponseEntity.internalServerError().body("An error occurred.");
         }
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping("/add/{id}")
     public ResponseEntity<Object> createOrder(@RequestBody Order order, @PathVariable("id") String id) {
+        System.out.println(order);
         try {
 
             Optional<Customer> customerOp = customerService.findById(Long.parseLong(id));
@@ -88,7 +91,7 @@ public class OrderController {
           if(order.getLabel() != null) {
               orderToUpdate.setLabel(order.getLabel());
           }
-         
+
           if(order.getStatus() != null) {
               orderToUpdate.setStatus(order.getStatus());
           }
