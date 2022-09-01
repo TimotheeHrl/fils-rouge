@@ -6,28 +6,30 @@ package com.filRouge.filRouge.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.PositiveOrZero;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.GenerationTime;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.filRouge.filRouge.controller.serialiser.OrderSerializer;
+import lombok.*;
+
 
 /**
  *
  * @author maxla
  */
 @Entity
-@Table(name="orders")
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
+@Table(name="orders")
+@JsonSerialize(using = OrderSerializer.class)
 public class Order {
     
     @Id
@@ -38,10 +40,7 @@ public class Order {
     
     private String label;
     
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name="customer_id", nullable=false)
-    private Customer customer;
+
     
     @PositiveOrZero(message = "doit etre superieur a 0!")
     private Long numberOfDay;
@@ -49,25 +48,13 @@ public class Order {
     @PositiveOrZero(message = "doit etre superieur a 0!")
     private Double unitPrice;
     
-    @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
-    @Formula("unitPrice*numberOfDay")
-    private Double totalExcludeTaxe;
-    
-    @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
-    @Formula("totalExcludeTaxe*1.20")
-    private Double totalWithTaxe;
-    
+
+
     private String status;
 
-    public Order(String type, String label, Customer customer, Long numberOfDay, Double unitPrice, String status) {
-        this.type = type;
-        this.label = label;
-        this.customer = customer;
-        this.numberOfDay = numberOfDay;
-        this.unitPrice = unitPrice;
-        this.status = status;
-    }
-    
-    
-    
+    @ManyToOne
+    @JoinColumn(name="customer_id", nullable=false)
+    private Customer customer;
+
+
 }

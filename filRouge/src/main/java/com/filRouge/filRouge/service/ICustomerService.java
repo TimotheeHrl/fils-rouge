@@ -5,7 +5,10 @@
 package com.filRouge.filRouge.service;
 
 import com.filRouge.filRouge.model.Customer;
+
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -14,10 +17,18 @@ import java.util.List;
 public interface ICustomerService {
     public List<Customer> findAll();
 
-    public Customer findById(Long id);
-    
-    public void save(Customer customer);
+
+    Optional<Customer> findById(Long id);
+
+    public Customer save(Customer customer);
     
     public void delete(Long id);
-    
+
+    Customer findByMail(String mail);
+
+
+    @Transactional
+    void deleteByMail(String mail);
+
+
 }

@@ -6,41 +6,69 @@ package com.filRouge.filRouge.service;
 
 import com.filRouge.filRouge.model.Customer;
 import com.filRouge.filRouge.repository.CustomerRepository;
+
 import java.util.List;
+import java.util.Optional;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author maxla
  */
 @Service
-public class CustomerService implements ICustomerService{
+@RequiredArgsConstructor
+public class CustomerService implements ICustomerService {
+    private final CustomerRepository customerRepository;
+    private final   ICustomerService customerService;
 
-    private CustomerRepository customRepo; 
 
-    public CustomerService(CustomerRepository customRepo) {
-        this.customRepo = customRepo;
+
+
+
+    @Autowired
+    public CustomerService (@Lazy  ICustomerService customerService, @Lazy CustomerRepository customerRepository){
+        super();
+        this.customerService = customerService;
+        this.customerRepository = customerRepository;
+
     }
 
-    
+
+
     @Override
     public List<Customer> findAll() {
-        return customRepo.findAll();
+        return customerRepository.findAll();
     }
 
     @Override
-    public Customer findById(Long id) {
-        return customRepo.findById(id).orElse(null);
+    public Optional<Customer> findById(Long id) {
+        return customerRepository.findById(id);
     }
 
     @Override
-    public void save(Customer customer) {
-        customRepo.save(customer);
+    public Customer save(Customer customer) {
+        customerRepository.save(customer);
+        return customer;
     }
 
     @Override
     public void delete(Long id) {
-        customRepo.deleteById(id);
+        customerRepository.deleteById(id);
     }
-    
+
+    @Override
+    public Customer findByMail(String mail) {
+        return customerRepository.findByMail(mail);
+
+    }
+
+    @Override
+    public void deleteByMail(String mail) {
+
+    }
+
+
 }

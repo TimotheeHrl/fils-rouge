@@ -8,11 +8,23 @@ import com.filRouge.filRouge.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+import java.util.Optional;
+
 /**
  *
  * @author maxla
  */
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    
+    boolean existsByMail(String mail);
+
+    Optional<Customer> findById(Long id);
+
+    Customer findByMail(String mail);
+    @Transactional
+    void deleteByMail(String mail);
+
+
+
 }

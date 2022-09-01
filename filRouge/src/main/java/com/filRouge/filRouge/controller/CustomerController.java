@@ -4,51 +4,163 @@
  */
 package com.filRouge.filRouge.controller;
 
+import com.filRouge.filRouge.service.CustomerService;
+import io.swagger.annotations.*;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.filRouge.filRouge.model.Customer;
-import com.filRouge.filRouge.service.CustomerService;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author maxla
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
+
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/customers")
 public class CustomerController {
     
-    @Autowired
-    private CustomerService customerService;
-    
 
-    @GetMapping(value="/customers")
+    private CustomerService customerService;
+
+@Autowired
+     public CustomerController(@Lazy CustomerService customerService){
+        this.customerService = customerService;
+}
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+
+    @GetMapping(value="/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getCustomers(){
-        String serialized = "";
         List<Customer> clients = this.customerService.findAll();
         try {
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(clients));
         } catch (JsonProcessingException ex) {
+            System.out.println(ex  );
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
         }
         
     }
-    
-    
-    
- 
-    
-    @RequestMapping(value="/customer", method= RequestMethod.POST)
-    public ResponseEntity<Object> createCustomer(@RequestBody Customer customer){
-        customerService.save(customer);
-        return new ResponseEntity<>("Customer is created successfully", HttpStatus.CREATED);
+
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PostMapping(value="/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> createCustomer(@RequestBody Customer customer) {
+    try {
+        System.out.println(customer.toString());
+        return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerService.save(customer)));
+
+    } catch (Exception ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+     }
     }
+
+            @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+               @PutMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<Object> updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
+        try {
+            System.out.println(id.toString());
+            Optional<Customer> customerToUpdateOp = customerService.findById(id);
+
+            Customer customerToUpdate = customerToUpdateOp.get();
+
+            if(customer.getLastname()!=null){
+                customerToUpdate.setLastname(customer.getLastname());
+            }
+            if(customer.getFirstname()!=null){
+                customerToUpdate.setFirstname(customer.getFirstname());
+            }
+            if(customer.getMail()!=null){
+                customerToUpdate.setMail(customer.getMail());
+            }
+            if(customer.getPhone()!=null){
+                customerToUpdate.setPhone(customer.getPhone());
+            }
+            if(customer.getAdress()!=null){
+                customerToUpdate.setAdress(customer.getAdress());
+            }
+            if(customer.getCity()!=null){
+                customerToUpdate.setCity(customer.getCity());
+            }
+            if(customer.getZipCode()!=null){
+                customerToUpdate.setZipCode(customer.getZipCode());
+            }
+            if(customer.getCountry()!=null){
+                customerToUpdate.setCountry(customer.getCountry());
+            }
+            if(customer.getCompany()!=null){
+                customerToUpdate.setCompany(customer.getCompany());
+            }
+            if(customer.getActive() !=null){
+                customerToUpdate.setActive(customer.getActive());
+            }
+
+            customerService.save(customerToUpdate);
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerToUpdate));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    }
+
+
+
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+@GetMapping(value="/mail/{mail}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getCustomerByMail(@PathVariable("mail") String mail) {
+        try {
+
+            Customer customer = customerService.findByMail(mail);
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customer));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    }
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @GetMapping(value="/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getCustomerById(@PathVariable("id") String id) {
+        System.out.println(id);
+        try {
+            Optional<Customer> customerOp = customerService.findById(Long.parseLong(id));
+            Customer customer = customerOp.get();
+            System.out.println(customer.toString());
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customer));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    }
+
+
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @DeleteMapping(value="/{mail}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> deleteCustomerByMail(@PathVariable("mail") String mail) {
+
+        try {
+            customerService.deleteByMail(mail);
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString("Customer deleted"));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+        }
+    }
+
+
+
+
+
+
+
+
 }
