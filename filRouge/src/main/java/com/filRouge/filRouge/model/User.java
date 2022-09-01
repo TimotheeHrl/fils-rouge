@@ -1,5 +1,8 @@
 package com.filRouge.filRouge.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
+import com.filRouge.filRouge.controller.serialiser.UserSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +23,7 @@ import java.util.Set;
       @UniqueConstraint(columnNames = "username"),
       @UniqueConstraint(columnNames = "email") 
     })
-
+@JsonSerialize(using = UserSerializer.class)
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

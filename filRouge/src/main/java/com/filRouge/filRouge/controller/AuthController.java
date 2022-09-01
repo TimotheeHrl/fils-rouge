@@ -1,5 +1,6 @@
 package com.filRouge.filRouge.controller;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.filRouge.filRouge.model.ERole;
 import com.filRouge.filRouge.model.Role;
 import com.filRouge.filRouge.model.User;
