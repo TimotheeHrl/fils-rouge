@@ -77,7 +77,7 @@ public class AuthController {
   }
 
 
-  @PostMapping(value = "/signup", produces = APPLICATION_JSON_VALUE)
+  @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
       return ResponseEntity
