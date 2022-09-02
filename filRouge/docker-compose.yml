@@ -23,6 +23,7 @@ services:
       - "3307:3306"
     volumes:
       - ./db/dump.sql:/script/dump.sql
+      - dbvol:/var/lib/mysql
     command: "--init-file /script/dump.sql"
 
   app:
