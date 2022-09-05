@@ -147,7 +147,7 @@ INSERT INTO `users` VALUES (1,'moderateur@email.com','$2a$10$hTaiVeLc83iP97j3MqT
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-
+UPDATE orders SET status = 'CONFIRMED' ;
+UPDATE `user_roles` SET `role_id` = 3 WHERE `user_roles`.`user_id` = 4;
 
 SET FOREIGN_KEY_CHECKS=1;

@@ -24,6 +24,8 @@ public class OrderSerializer extends StdSerializer<Order> {
             jg.writeStringField("type", o.getType());
             jg.writeStringField("label", o.getLabel());
             jg.writeStringField("status", o.getStatus());
+            jg.writeStringField("numberOfDay", o.getNumberOfDay().toString());
+            jg.writeStringField("unitPrice", o.getUnitPrice().toString());
             jg.writeObjectFieldStart("customer");
             {
                 jg.writeNumberField("id", o.getCustomer().getId());

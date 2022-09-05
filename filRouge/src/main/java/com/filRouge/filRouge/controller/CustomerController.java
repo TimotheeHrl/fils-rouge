@@ -29,8 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author maxla
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
-
+@CrossOrigin(origins = "*", maxAge = 36000000)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/customers")
@@ -70,7 +69,7 @@ public class CustomerController {
     }
 
             @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-               @PutMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+               @PutMapping(value="/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public  ResponseEntity<Object> updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
         try {
             System.out.println(id.toString());

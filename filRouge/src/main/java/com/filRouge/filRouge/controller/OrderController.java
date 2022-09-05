@@ -30,7 +30,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  *
  * @author maxla
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 36000000)
 
 @RestController
 @RequestMapping(value = "/api/orders", produces = APPLICATION_JSON_VALUE)
@@ -79,14 +79,11 @@ public class OrderController {
     }
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> updateOrder(@RequestBody Order order) {
+    public ResponseEntity<Object> updateOrder(@PathVariable Long id, @RequestBody Order order) {
+
         try {
+            Order orderToUpdate = orderService.findById(id);
 
-            Optional<Customer> customerOp = customerService.findById(order.getCustomer().getId());
-            Customer customer = customerOp.get();
-            order.setCustomer(customer);
-
-            Order orderToUpdate = orderService.findById(order.getId());
 
           if(order.getLabel() != null) {
               orderToUpdate.setLabel(order.getLabel());
@@ -104,12 +101,15 @@ public class OrderController {
           if(order.getUnitPrice() != null) {
               orderToUpdate.setUnitPrice(order.getUnitPrice());
           }
-
-            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(orderService.save(order)));
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(
+                    orderService.save(orderToUpdate)));
         } catch (JsonProcessingException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
+            System.out.println(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.toString());
         }
     }
+
+
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deleteOrder(@PathVariable Long id) {
