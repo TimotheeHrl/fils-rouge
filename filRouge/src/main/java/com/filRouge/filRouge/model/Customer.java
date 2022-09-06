@@ -29,8 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @NoArgsConstructor
 @Table(name="customer")
 @JsonSerialize(using = CustomerSerializer.class)
-
-//@JsonSerialize(using = CustomerSerializer.class)
 public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,7 +69,7 @@ public class Customer implements Serializable {
     private String password;
 
 
-    @Column(nullable=false)
+    @Column(nullable=true)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
 

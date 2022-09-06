@@ -67,7 +67,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public void deleteByMail(String mail) {
-
+         customerRepository.deleteByMail(mail);
     }
 
 

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,6 +60,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
       .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
       .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+            .antMatchers("/api/channel/**").permitAll()
+            .antMatchers("/chat_thread/**").permitAll()
+
       .antMatchers("/api/test/**").permitAll()
       .anyRequest().permitAll();
 
@@ -70,5 +74,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     web.ignoring().antMatchers("/v2/api-docs")//
             .antMatchers("/swagger-ui/**")//
          ;
+  }
+  protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
+    messages
+            .simpDestMatchers("/api/channel/**").authenticated();
+
+  }
+
+  // configure authorization for messages
+  protected void configureOutbound(MessageSecurityMetadataSourceRegistry messages) {
+    messages
+            .simpDestMatchers("/api/channel/**").authenticated();
   }
 }

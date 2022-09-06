@@ -1,8 +1,5 @@
 package com.filRouge.filRouge.model;
 
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,35 +8,34 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="message")
+@Table(name="channel")
 //@JsonSerialize(using = CustomerSerializer.class)
 
-public class Message {
-
+public class Channel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(length = 50)
+    private String name;
     @Column(length = 200)
-    private String content;
-
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private User sender;
+    private String description;
 
     @Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private LocalDateTime localDateTime;
-    @ManyToOne
-    @JoinColumn(name = "channel_id", nullable = false)
-    private Channel channel;
+
+
+    @Column(nullable=true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "channel", cascade = CascadeType.ALL)
+    private List<Message> messages;
+
 
 
 }
-

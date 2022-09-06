@@ -69,6 +69,7 @@ public class OrderController {
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createOrder(@RequestBody Order order) {
         try {
+            System.out.println(order);
             Optional<Customer> customerOp = customerService.findById(order.getCustomer().getId());
             Customer customer = customerOp.get();
             order.setCustomer(customer);
