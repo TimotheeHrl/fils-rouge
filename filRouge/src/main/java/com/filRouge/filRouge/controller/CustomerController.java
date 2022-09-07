@@ -61,9 +61,11 @@ public class CustomerController {
     public ResponseEntity<Object> createCustomer(@RequestBody Customer customer) {
     try {
         System.out.println(customer.toString());
-        return ResponseEntity.ok(new ObjectMapper().writeValueAsString(customerService.save(customer)));
+        customerService.save(customer);
+        return ResponseEntity.ok(HttpStatus.OK);
 
     } catch (Exception ex) {
+        System.out.println(ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
      }
     }

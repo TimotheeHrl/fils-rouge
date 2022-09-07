@@ -20,7 +20,7 @@ public interface ICustomerService {
 
     Optional<Customer> findById(Long id);
 
-    public Customer save(Customer customer);
+    public Object save(Customer customer);
     
     public void delete(Long id);
 

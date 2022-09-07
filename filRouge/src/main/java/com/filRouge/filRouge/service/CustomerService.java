@@ -49,9 +49,14 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public Customer save(Customer customer) {
-        customerRepository.save(customer);
-        return customer;
+    public String save(Customer customer) {
+        try {
+            customerRepository.save(customer);
+            return "ok";
+        } catch (Exception e) {
+            return e.toString();
+        }
+
     }
 
     @Override

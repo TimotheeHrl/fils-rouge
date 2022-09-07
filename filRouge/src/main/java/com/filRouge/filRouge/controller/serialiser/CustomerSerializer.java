@@ -31,8 +31,8 @@ public class CustomerSerializer extends StdSerializer<Customer> {
     public void serialize(Customer cu, JsonGenerator jg, SerializerProvider sp) throws IOException {
         jg.writeStartObject();
         jg.writeNumberField("id", cu.getId());
-        jg.writeStringField("lastName", cu.getLastname());
-        jg.writeStringField("firstName", cu.getFirstname());
+        jg.writeStringField("lastname", cu.getLastname());
+        jg.writeStringField("firstname", cu.getFirstname());
         jg.writeStringField("company", cu.getCompany());
         jg.writeStringField("mail", cu.getMail());
         jg.writeStringField("phone", cu.getPhone());

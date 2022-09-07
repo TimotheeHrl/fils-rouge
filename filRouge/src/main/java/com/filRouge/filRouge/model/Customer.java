@@ -65,10 +65,6 @@ public class Customer implements Serializable {
     private Boolean active;
 
 
-    @Size(min = 8, message = "Minimum password length: 8 characters")
-    private String password;
-
-
     @Column(nullable=true)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
