@@ -31,7 +31,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * @author maxla
  */
 @CrossOrigin(origins = "*", maxAge = 36000000)
-
 @RestController
 @RequestMapping(value = "/api/orders", produces = APPLICATION_JSON_VALUE)
 public class OrderController {
@@ -112,7 +111,7 @@ public class OrderController {
 
 
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deleteOrder(@PathVariable Long id) {
         try {
             orderService.deleteOrderById(id);
