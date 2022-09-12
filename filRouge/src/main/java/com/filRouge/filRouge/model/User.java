@@ -1,10 +1,7 @@
 package com.filRouge.filRouge.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -39,6 +36,9 @@ public class User {
   @Size(max = 120)
   private String password;
 
+  @Nullable
+  private String token;
+
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(  name = "user_roles", 
         joinColumns = @JoinColumn(name = "user_id"), 
@@ -46,10 +46,12 @@ public class User {
   private Set<Role> roles = new HashSet<>();
 
 public User(String username, String email, String password) {
-  this.username = username;
-  this.email = email;
-  this.password = password;
-}
+    this.username = username;
+    this.email = email;
+    this.password = password;
+    this.token = token;
+  }
+
 
 
   public User() {
