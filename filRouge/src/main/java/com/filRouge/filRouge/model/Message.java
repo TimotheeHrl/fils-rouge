@@ -1,8 +1,6 @@
 package com.filRouge.filRouge.model;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,17 +25,20 @@ public class Message {
     private Long id;
 
     @Column(length = 200)
-    private String content;
+    private String text;
+
+@Column(length = 1000)
+    private String avatar;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private User sender;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private LocalDateTime localDateTime;
     @ManyToOne
-    @JoinColumn(name = "channel_id", nullable = false)
+    @JoinColumn(name = "channel_id", nullable = true)
     private Channel channel;
 
 

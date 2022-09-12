@@ -9,8 +9,8 @@ import lombok.Data;
 public class ChatMessage {
     private String text;
     private String username;
-    private String avatar;
 
+    private  String avatar;
     public ChatMessage(){
 
     }
