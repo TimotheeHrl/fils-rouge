@@ -45,7 +45,7 @@ public class OrderController {
         this.customerService = customerService;
     }
 
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getOrder(@PathVariable Long id) {
         try {
@@ -54,17 +54,21 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
         }
     }
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')" )
     @GetMapping(value = "/all", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getOrders() {
         try {
+
+
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString( orderService.findAllWithCustomer()));
         } catch (JsonProcessingException ex) {
             System.out.println(ex);
             return ResponseEntity.internalServerError().body("An error occurred.");
         }
     }
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createOrder(@RequestBody Order order) {
         try {
@@ -77,7 +81,7 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred.");
         }
     }
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> updateOrder(@PathVariable Long id, @RequestBody Order order) {
 
@@ -110,7 +114,7 @@ public class OrderController {
     }
 
 
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping(value = "delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deleteOrder(@PathVariable Long id) {
         try {
