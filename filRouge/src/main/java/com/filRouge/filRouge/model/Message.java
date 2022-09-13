@@ -1,6 +1,8 @@
 package com.filRouge.filRouge.model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.filRouge.filRouge.controller.serialiser.MessageSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="message")
-//@JsonSerialize(using = CustomerSerializer.class)
-
+@JsonSerialize(using = MessageSerializer.class)
 public class Message {
 
     @Id
@@ -27,8 +28,6 @@ public class Message {
     @Column(length = 200)
     private String text;
 
-@Column(length = 1000)
-    private String avatar;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

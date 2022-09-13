@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import com.github.javafaker.Faker;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -103,7 +104,10 @@ public class AuthController {
       Role userRole = roleRepository.findByName(ERole.ROLE_USER)
           .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
       roles.add(userRole);
-
+// use Faker to generate random image
+  //  Faker faker = new Faker();
+   // String image = faker.avatar().image();
+    user.setAvatar("https://i.pravatar.cc/150?img="+ (int)(Math.random() * 70));
 
     user.setRoles(roles);
     userRepository.save(user);
