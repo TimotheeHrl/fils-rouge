@@ -82,6 +82,8 @@ public class AuthController {
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    System.out.println( signUpRequest.getEmail().toString());
+
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
       return ResponseEntity
           .badRequest()
@@ -98,7 +100,6 @@ public class AuthController {
     User user = new User(signUpRequest.getUsername(), 
                signUpRequest.getEmail(),
                encoder.encode(signUpRequest.getPassword()));
-
     Set<Role> roles = new HashSet<>();
 
       Role userRole = roleRepository.findByName(ERole.ROLE_USER)

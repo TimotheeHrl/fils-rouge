@@ -13,6 +13,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Optional;
 // The chat message-handling Controller
 @Controller
 @CrossOrigin(origins = "*", maxAge = 3600)
+
 public class ChatController {
     UserRepository userRepository;
     MessageRepository messageRepository;
@@ -57,6 +59,9 @@ public class ChatController {
             message1.setChannel(channel);
 
         }
+        messageRepository.save(message1);
         return  message1;
     }
+
+
 }
