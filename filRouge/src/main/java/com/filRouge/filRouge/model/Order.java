@@ -4,16 +4,17 @@
  */
 package com.filRouge.filRouge.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.filRouge.filRouge.controller.serialiser.OrderSerializer;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ import org.hibernate.annotations.GenerationTime;
 @Table(name="orders")
 @Data
 @NoArgsConstructor
+@JsonSerialize(using = OrderSerializer.class)
 public class Order {
     
     @Id
@@ -39,7 +41,7 @@ public class Order {
     private String label;
     
     @ManyToOne
-    @JsonIgnore
+//    @JsonIgnore
     @JoinColumn(name="customer_id", nullable=false)
     private Customer customer;
     
@@ -49,13 +51,14 @@ public class Order {
     @PositiveOrZero(message = "doit etre superieur a 0!")
     private Double unitPrice;
     
-    @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
-    @Formula("unitPrice*numberOfDay")
-    private Double totalExcludeTaxe;
-    
-    @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
-    @Formula("totalExcludeTaxe*1.20")
-    private Double totalWithTaxe;
+//    @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
+//  //  @Formula("unit_price*number_of_day")
+//    private Double totalExcludeTaxe ;
+//
+//    @org.hibernate.annotations.Generated(value = GenerationTime.ALWAYS)
+////    @Formula("totalExcludeTaxe*1.20")
+//    private Double totalWithTaxe ;
+   
     
     private String status;
 
@@ -67,7 +70,14 @@ public class Order {
         this.unitPrice = unitPrice;
         this.status = status;
     }
+
+    public Double getTotalExcludeTaxe(){
+        return this.unitPrice*numberOfDay;
+    }
     
-    
+    public Double getTotalWithTaxe(){
+        return this.getTotalExcludeTaxe()*1.20;
+    }
+
     
 }

@@ -8,6 +8,7 @@ package com.filRouge.filRouge.model;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.filRouge.filRouge.controller.serialiser.CustomerSerializer;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -65,13 +66,13 @@ public class Customer implements Serializable {
     @Column(length=50)
     private String country;
     
-    private Boolean active;
+    private StateClient active;
     
     @Column(nullable=false)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
-    public Customer(String lastname, String firstname, String company, String mail, String phone, String adress, String zipCode, String city, String country, Boolean active) {
+    public Customer(String lastname, String firstname, String company, String mail, String phone, String adress, String zipCode, String city, String country, StateClient active, List<Order> orders) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.company = company;
@@ -82,7 +83,6 @@ public class Customer implements Serializable {
         this.city = city;
         this.country = country;
         this.active = active;
+        this.orders = orders;
     }
-    
-    
 }
