@@ -69,15 +69,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/swagger-ui/**")//
          ;
   }
-  protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
-    messages
-            .simpDestMatchers("/api/channel/**").authenticated();
 
-  }
-
-  // configure authorization for messages
-  protected void configureOutbound(MessageSecurityMetadataSourceRegistry messages) {
-    messages
-            .simpDestMatchers("/api/channel/**").authenticated();
-  }
 }
