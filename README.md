@@ -10,3 +10,11 @@ docker-compose up
 Searx
 query html exemple
 localhost:8082/search?q=coucou&language=fr-FR&time_range=None&safesearch=0&categories=general
+
+
+
+
+
+
+
+docker exec -ti b5b8e81e334f mysqldump -u luteceuser -p gru-plugin-appointment --databases >> ./dump.sql
